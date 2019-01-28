@@ -24,7 +24,7 @@ router.get('/delete', function (req, res, next) {
   content = JSON.stringify(remainingContacts, null, 2);
   fs.writeFileSync('public/data/contacts.json', content);
 
-  res.json({success: true});
+  
   res.redirect('/agenda.html');
 
 });

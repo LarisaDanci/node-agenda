@@ -20,21 +20,21 @@ function getNewRow() {
         </tr>`;
 }
 function saveContact() {
-    
-    var firstName = document.querySelector ('input[name=firstName]').value;
+
+    var firstName = document.querySelector('input[name=firstName]').value;
     var lastName = $('input[name=lastName]').val();
     var phone = $('input[name=phone]').val();
 
-    var actionUrl = phoneToEdit ? 'contacts/update' +phoneToEdit: 'contacts/create';
-    
-    
+    var actionUrl = phoneToEdit ? 'contacts/update' + phoneToEdit : 'contacts/create';
+
+
     $.post(actionUrl, {
         firstName,
         lastName,
         phone: phone
     }).done(function (response) {
         console.warn("done", response);
-        if(response.success) {
+        if (response.success) {
             loadContacts();
         }
     });
@@ -54,7 +54,7 @@ function displayContacts(contacts) {
             </td>
         </tr>`;
     });
-   
+
     var actions = getNewRow();
     rows.push(actions);
     //rows.push(getNewRow());
@@ -64,23 +64,35 @@ function displayContacts(contacts) {
 
 function initEvents() {
     // TODO use native click
-    $( "tbody" ).delegate( "a.edit", "click", function() {
+    $("tbody").delegate("a.edit", "click", function () {
         phoneToEdit = this.getAttribute('data-id');
 
-        var contact = globalContacts.find(function(contact){
+        var contact = globalContacts.find(function (contact) {
             return contact.phone == phoneToEdit;
         });
 
         console.warn('edit', phoneToEdit, contact);
         $('input[name=phone]').val(phoneToEdit);
 
-        document.querySelector ('input[name=firstName]').value = contact.firstName;
+        document.querySelector('input[name=firstName]').value = contact.firstName;
         $('input[name=lastName]').val(contact.lastName);
         $('input[name=phone]').val(contact.phone);
 
-      });
+    });
+
+    document.getElementById('search').addEventListener('input', doSearch);
+}
+
+function doSearch() {
+    var value = this.value.toLowerCase();
+    var filteredContacts = globalContacts.filter(function (contact) {
+         return contact.firstName.toLowerCase().includes(value)|| 
+             contact.lastName.toLowerCase().includes(value)||
+             contact.phone.toLowerCase().includes(value);
+    });
+
+    displayContacts(filteredContacts);
 }
 
 loadContacts();
-
 initEvents();
