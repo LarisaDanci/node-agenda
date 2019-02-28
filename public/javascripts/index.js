@@ -2,7 +2,7 @@ var phoneToEdit = '';
 
 function loadContacts() {
     console.info('1. first step in loadContacts');
-    $.ajax('data/contacts.json').done(function (contacts) {
+    $.ajax("contacts/").done(function (contacts) {
         console.info('2. contacts from server', contacts);
         window.globalContacts = contacts;
         displayContacts(contacts);
@@ -11,24 +11,18 @@ function loadContacts() {
 
 }
 
-function getNewRow() {
-    return `<tr>
-            <td><input type="text" name="firstName" placeholder="firstName"/></td>
-            <td><input type="text" name="lastName" placeholder="lastName"/></td>
-            <td><input type="text" name="phone" placeholder="phone"/></td>
-            <td><button onclick="saveContact()">Save</button></td>
-        </tr>`;
-}
+
+
 function saveContact() {
 
     var firstName = document.querySelector('input[name=firstName]').value;
     var lastName = $('input[name=lastName]').val();
     var phone = $('input[name=phone]').val();
 
-    var actionUrl = phoneToEdit ? 'contacts/update' + phoneToEdit : 'contacts/create';
+    var actionUrl = phoneToEdit ? 'contacts/update?id=' + phoneToEdit : 'contacts/create';
 
 
-    $.post(actionUrl, {
+    $.post(actionURL, {
         firstName,
         lastName,
         phone: phone
@@ -49,8 +43,8 @@ function displayContacts(contacts) {
             <td>${contact.lastName}</td>
             <td>${contact.phone}</td>
             <td>
-                <a href="/contacts/delete?phone=${contact.phone}">&#10006;</a>
-                <a href="#" class="edit" data-id="${contact.phone}">&#9998;</a>
+                <a href="/contacts/delete?id=${contact.id}">&#10006;</a>
+                <a href="#" class="edit" data-id="${contact.id}">&#9998;</a>
             </td>
         </tr>`;
     });
@@ -68,7 +62,7 @@ function initEvents() {
         phoneToEdit = this.getAttribute('data-id');
 
         var contact = globalContacts.find(function (contact) {
-            return contact.phone == phoneToEdit;
+            return contact.id == phoneToEdit;
         });
 
         console.warn('edit', phoneToEdit, contact);
@@ -82,6 +76,8 @@ function initEvents() {
 
     document.getElementById('search').addEventListener('input', doSearch);
 }
+loadContacts();
+initEvents();
 
 function doSearch() {
     var value = this.value.toLowerCase();
@@ -94,5 +90,4 @@ function doSearch() {
     displayContacts(filteredContacts);
 }
 
-loadContacts();
-initEvents();
+

@@ -51,7 +51,7 @@ router.post('/create', function(req, res, next){
 
   res.json({success: true});
   // 1000 please redirect to agenda.html
-  res.redirect('/agenda.html');
+ 
 
 
 });
@@ -89,5 +89,3 @@ router.post('/update', function (req, res, next) {
  // res.redirect('/agenda.html');
 
 });
-
-module.exports = router;
